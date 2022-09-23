@@ -1,0 +1,1209 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ATLAS Equipment Centre API",
+    "description": "This documents describes ATLAS Equipment Centre API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "{{ host }}api/h2020/equipment_centre"
+    }
+  ],
+  "tags": [
+    {
+      "name": "equipment",
+      "description": "Equipment"
+    },
+    {
+      "name": "tasks",
+      "description": "Tasks"
+    },
+    {
+      "name": "appengine",
+      "description": "AppEngine"
+    }
+  ],
+  "paths": {
+    "/equipment": {
+      "get": {
+        "tags": [
+          "equipment"
+        ],
+        "security": [
+          {
+            "bearerAuth": [],
+            "basicAuth": []
+          }
+        ],
+        "summary": "List equipment",
+        "description": "Returns a list of equipment",
+        "operationId": "list_equipment",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArrayOfEquipment"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/equipment/{equipmentId}": {
+      "get": {
+        "tags": [
+          "equipment"
+        ],
+        "security": [
+          {
+            "bearerAuth": [],
+            "basicAuth": []
+          }
+        ],
+        "summary": "Find equipment by ID",
+        "description": "Returns a single item of equipment",
+        "operationId": "get_equipment",
+        "parameters": [
+          {
+            "name": "equipmentId",
+            "in": "path",
+            "description": "ID of equipment to return",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/EquipmentItem"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied",
+            "content": {}
+          },
+          "404": {
+            "description": "Equipment not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Submit a task (submit_task)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskCreation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                },
+                "example": {
+                  "message": "Another operation for the equipment|advice|field is in progress"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                },
+                "example": "Another operation for the equipment|advice|field is in progress"
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Retrieve details about a submitted task (get_task_status)",
+        "parameters": [
+          {
+            "description": "the id of a task",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+          },
+          {
+            "description": "returns additional  advice info attributes in the response",
+            "name": "with_details",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Task"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "details": {
+                          "$ref": "#/components/schemas/TaskDetails"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The operation was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Cancel a task (cancel_task)",
+        "parameters": [
+          {
+            "description": "the id of a task",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "401": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The operation was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/details": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "appengine"
+        ],
+        "summary": "Retrieve field boundaries about a submitted task (get_task_details)",
+        "parameters": [
+          {
+            "description": "the id of a task",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The operation was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks_for/{equipmentId}": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": [],
+            "basicAuth": []
+          }
+        ],
+        "tags": [
+          "appengine"
+        ],
+        "summary": "Retrieves the PENDING tasks for an equipment",
+        "parameters": [
+          {
+            "description": "the id of an equipment",
+            "name": "equipmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArrayOfAppEngineTask"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/start": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": [],
+            "basicAuth": []
+          }
+        ],
+        "tags": [
+          "appengine"
+        ],
+        "summary": "Retrieve the application map of a PENDING task and set the task status to IN_PROGRESS",
+        "parameters": [
+          {
+            "description": "the id of a task",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GeoPackage application map",
+            "content": {
+              "application/geopackage+sqlite3": {
+              }
+            }
+          },
+          "204": {
+            "description": "When no application_map available (e.g. for harvesting)"
+          },
+          "403": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The task was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/unstart": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": [],
+            "basicAuth": []
+          }
+        ],
+        "tags": [
+          "appengine"
+        ],
+        "summary": "Resets the task to PENDING status",
+        "parameters": [
+          {
+            "description": "the id of a task",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "403": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The task was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/complete": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": [],
+            "basicAuth": []
+          }
+        ],
+        "tags": [
+          "appengine"
+        ],
+        "summary": "Upload the resulting 'as applied' GeoPackage application map and sets task's status to COMPLETED",
+        "parameters": [
+          {
+            "description": "the id of a task",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The 'as applied' GeoPackage to post on the field_data service",
+          "content": {
+            "application/geopackage+sqlite3": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "403": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The task was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/fail": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": [],
+            "basicAuth": []
+          }
+        ],
+        "tags": [
+          "appengine"
+        ],
+        "summary": "Sets the task to FAILED status (nothing applied)",
+        "parameters": [
+          {
+            "description": "the id of a task",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "failure_reason": {
+                    "type": "string",
+                    "description": "The reason for the failure"
+                  }
+                }
+              },
+              "example": {
+                "failure_reason": "Unknown error"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "403": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The task was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "The user name is the equipment's id and the password is an API key that can be obtained in the Equipment Centre UI"
+      }
+    },
+    "schemas": {
+      "EquipmentItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id of equipment"
+          },
+          "name": {
+            "type": "string",
+            "example": "My tractor"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "ArrayOfEquipment": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EquipmentItem"
+            }
+          }
+        }
+      },
+      "AdviceURN": {
+        "type": "string",
+        "pattern": "^urn:[a-z][a-z0-9_.\\-]*:[\\w-.]+",
+        "description": "Uniform resource name of an advice with the syntax `urn:<service_id>:<internal_id>`. <service_id> must be the id of a valid and active ATLAS service"
+      },
+      "TaskCreation": {
+        "type": "object",
+        "properties": {
+          "equipment_id": {
+            "type": "string",
+            "description": "id of equipment"
+          },
+          "advice_urn": {
+            "$ref": "#/components/schemas/AdviceURN"
+          },
+          "application_refs": {
+            "description": "list of application references to be applied in a single pass. Must be a subset of the ones supplied in the advice planning",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notification_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "If present, this URL will be invoked when there are status changes in task applications"
+          }
+        },
+        "required": [
+          "equipment_id",
+          "advice_urn"
+        ],
+        "example": {
+          "equipment_id": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4",
+          "advice_urn": "urn:com.agricircle.atlas.fertilisation_advisor:1e371d44-59ae-4af1-9570-9743dd3ba613",
+          "application_refs": [
+            "slurry"
+          ],
+          "notification_url": "https://consumer.com/task/callback?secret=3d96264b-934d-4e74-82c0-82603a9cb7e2"
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id of task"
+          },
+          "equipment_id": {
+            "type": "string",
+            "description": "id of equipment"
+          },
+          "advice_urn": {
+            "$ref": "#/components/schemas/AdviceURN"
+          },
+          "application_refs": {
+            "description": "list of application references to be applied in a single pass. Must be a subset of the ones supplied in the advice planning",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notification_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "If present, this URL will be invoked when there are status changes in task applications"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CONFIGURATION_REQUIRED",
+              "FAILED"
+            ],
+            "description": "The status of the task"
+          },
+          "archived": {
+            "type": "boolean",
+            "description": "true if task as been canceled"
+          }
+        },
+        "required": [
+          "id",
+          "equipment_id",
+          "advice_urn",
+          "status"
+        ],
+        "example": {
+          "id": "1001f60a-1c3d-4b60-9a53-fa3a9a413731",
+          "equipment_id": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4",
+          "advice_urn": "urn:com.agricircle.atlas.fertilisation_advisor:1e371d44-59ae-4af1-9570-9743dd3ba613",
+          "application_refs": [
+            "slurry"
+          ],
+          "notification_url": "https://consumer.com/task/callback?secret=3d96264b-934d-4e74-82c0-82603a9cb7e2",
+          "status": "PENDING",
+          "archived": false
+        }
+      },
+      "TaskDetails": {
+        "type": "object",
+        "properties": {
+          "total_amount": {
+            "description": "Same as total amount of underlying advice",
+            "type": "number",
+            "format": "float"
+          },
+          "application_ref": {
+            "description": "Application ref of underlying advice",
+            "type": "string"
+          },
+          "<other_attributes>": {
+            "description": "Other attributes returned by the underlying advice (e.g. product)",
+            "type": "string"
+          },
+          "field_boundaries": {
+            "description": "GeoJSON boundaries (polygon with holes)",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "Polygon"
+                ],
+                "description": "Always 'Polygon'"
+              },
+              "coordinates": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number"
+                    },
+                    "description": "Must have  2 items for lat/long or 3 items for lat/long/elevation"
+                  },
+                  "description": "First element is outer boundary, optional addition elements are holes"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "field_boundaries"
+        ]
+      },
+      "AppEngineTask": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id of task"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "fertilization",
+              "crop_protection",
+              "irrigation",
+              "harvesting",
+              "sowing"
+            ],
+            "description": "type of the task (from the underlying advice)"
+          },
+          "field_name": {
+            "description": "Name of the field the task must be performed on",
+            "type": "string"
+          },
+          "application_refs": {
+            "description": "list of application references to be applied in a single pass. Must be a subset of the ones supplied in the advice",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "info": {
+            "description": "this is dependent on the advice type. It can be a list of products for fertilization/crop_protection, seed info for sowing, ..."
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "equipment_id",
+          "field_name"
+        ],
+        "example": {
+          "id": "1001f60a-1c3d-4b60-9a53-fa3a9a413731",
+          "type": "fertilization",
+          "equipment_id": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4",
+          "field_name": "Am bach",
+          "field_boundaries": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  8.475152850151062,
+                  47.47213709091847
+                ],
+                [
+                  8.475152850151062,
+                  47.47213709091847
+                ],
+                [
+                  8.475104570388794,
+                  47.47222049049008
+                ],
+                [
+                  8.475152850151062,
+                  47.47213709091847
+                ]
+              ]
+            ]
+          },
+          "application_refs": [
+            "slurry"
+          ],
+          "info": {
+            "products": [
+              "Cow slurry"
+            ]
+          }
+        }
+      },
+      "ArrayOfAppEngineTask": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppEngineTask"
+            }
+          }
+        }
+      },
+      "SimpleError": {
+        "type": "string",
+        "description": "Plain text message (may be empty).",
+        "example": "optional error message"
+      },
+      "DetailedError": {
+        "type": "object",
+        "description": "This defines the structure of an error payload when one is present. Actual messages and additional error information content may change from one implementation to another",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "error description"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Additional detailed information"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "example": {
+          "message": "general error message",
+          "errors": [
+            "optional",
+            "additional",
+            "details"
+          ]
+        }
+      }
+    }
+  }
+}
