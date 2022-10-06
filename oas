@@ -1036,18 +1036,26 @@
       "TaskDetails": {
         "type": "object",
         "properties": {
-          "total_amount": {
-            "description": "Same as total amount of underlying advice",
-            "type": "number",
-            "format": "float"
-          },
-          "application_ref": {
-            "description": "Application ref of underlying advice",
-            "type": "string"
-          },
-          "<other_attributes>": {
-            "description": "Other attributes returned by the underlying advice (e.g. product)",
-            "type": "string"
+          "applications": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "application_ref": {
+                  "description": "Application ref of underlying advice",
+                  "type": "string"
+                },
+                "<other_attributes>": {
+                  "description": "Other application attributes of the underlying advice (e.g. product, ...)",
+                  "type": "string"
+                },
+                "total_amount": {
+                  "description": "Same as total amount of underlying advice",
+                  "type": "number",
+                  "format": "float"
+                }
+              }
+            }
           },
           "field_boundaries": {
             "description": "GeoJSON boundaries (polygon with holes)",
