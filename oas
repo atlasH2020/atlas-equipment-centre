@@ -1,13 +1,13 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "ATLAS Equipment Centre API",
+    "title": "AgriCircle Equipment Centre API",
     "description": "This documents describes ATLAS Equipment Centre API",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "servers": [
     {
-      "url": "{{ host }}api/h2020/equipment_centre"
+      "url": "https://staging.atlas.agricircle.com/api/h2020/equipment_centre"
     }
   ],
   "tags": [
@@ -16,8 +16,8 @@
       "description": "Equipment"
     },
     {
-      "name": "tasks",
-      "description": "Tasks"
+      "name": "task_sets",
+      "description": "Task Sets"
     },
     {
       "name": "appengine",
@@ -45,7 +45,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ArrayOfEquipment"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Equipment"
+                  }
                 }
               }
             }
@@ -85,12 +88,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/EquipmentItem"
-                    }
-                  }
+                  "$ref": "#/components/schemas/Equipment"
                 }
               }
             }
@@ -106,7 +104,7 @@
         }
       }
     },
-    "/tasks": {
+    "/task_sets": {
       "post": {
         "security": [
           {
@@ -114,15 +112,15 @@
           }
         ],
         "tags": [
-          "tasks"
+          "task_sets"
         ],
-        "summary": "Submit a task (submit_task)",
+        "summary": "Submit a task set (submit_task_set)",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TaskCreation"
+                "$ref": "#/components/schemas/TaskSetCreation"
               }
             }
           }
@@ -133,7 +131,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Task"
+                  "$ref": "#/components/schemas/TaskSet"
                 }
               }
             }
@@ -205,7 +203,7 @@
         }
       }
     },
-    "/tasks/{id}": {
+    "/task_sets/{id}": {
       "get": {
         "security": [
           {
@@ -213,12 +211,12 @@
           }
         ],
         "tags": [
-          "tasks"
+          "task_sets"
         ],
-        "summary": "Retrieve details about a submitted task (get_task_status)",
+        "summary": "Retrieve details about a submitted task set (get_task_set_status)",
         "parameters": [
           {
-            "description": "the id of a task",
+            "description": "the id of a task set",
             "name": "id",
             "in": "path",
             "required": true,
@@ -226,16 +224,6 @@
               "type": "string"
             },
             "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
-          },
-          {
-            "description": "returns additional  advice info attributes in the response",
-            "name": "with_details",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
           }
         ],
         "responses": {
@@ -244,19 +232,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Task"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "details": {
-                          "$ref": "#/components/schemas/TaskDetails"
-                        }
-                      }
-                    }
-                  ]
+                  "$ref": "#/components/schemas/TaskSet"
                 }
               }
             }
@@ -315,12 +291,12 @@
           }
         ],
         "tags": [
-          "tasks"
+          "task_sets"
         ],
-        "summary": "Cancel a task (cancel_task)",
+        "summary": "Cancel a task set (cancel_task_set)",
         "parameters": [
           {
-            "description": "the id of a task",
+            "description": "the id of a task set",
             "name": "id",
             "in": "path",
             "required": true,
@@ -382,89 +358,7 @@
         }
       }
     },
-    "/tasks/{id}/details": {
-      "get": {
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "tags": [
-          "appengine"
-        ],
-        "summary": "Retrieve field boundaries about a submitted task (get_task_details)",
-        "parameters": [
-          {
-            "description": "the id of a task",
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TaskDetails"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Invalid or missing credentials",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DetailedError"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/SimpleError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "The operation was not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DetailedError"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/SimpleError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many requests",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DetailedError"
-                }
-              },
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/SimpleError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/tasks_for/{equipmentId}": {
+    "/task_sets_for/{equipmentId}": {
       "get": {
         "security": [
           {
@@ -475,7 +369,7 @@
         "tags": [
           "appengine"
         ],
-        "summary": "Retrieves the PENDING tasks for an equipment",
+        "summary": "Retrieves the PENDING task sets for an equipment",
         "parameters": [
           {
             "description": "the id of an equipment",
@@ -494,7 +388,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ArrayOfAppEngineTask"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AppEngineTaskSet"
+                  }
                 }
               }
             }
@@ -547,21 +444,21 @@
         }
       }
     },
-    "/tasks/{id}/start": {
+    "/task_sets/{id}/acquire": {
       "post": {
         "security": [
           {
-            "bearerAuth": [],
-            "basicAuth": []
+            "bearerAuth": []
           }
         ],
         "tags": [
           "appengine"
         ],
-        "summary": "Retrieve the application map of a PENDING task and set the task status to IN_PROGRESS",
+        "summary": "Retrieve task set details and application maps as ZIP archive.",
+        "description": "Returns the full task set details and marks the task set as IN_PROGRESS.",
         "parameters": [
           {
-            "description": "the id of a task",
+            "description": "the id of a task set",
             "name": "id",
             "in": "path",
             "required": true,
@@ -573,14 +470,164 @@
         ],
         "responses": {
           "200": {
-            "description": "GeoPackage application map",
+            "description": "Returns a ZIP archive containing:\n- **task_set.json** (see AppEngineDetailedTaskSet)\n- *<task_id1>.gpkg*\n- *<task_id2>.gpkg*\n- *...*\n",
             "content": {
-              "application/geopackage+sqlite3": {
+              "application/zip": {
               }
             }
           },
+          "401": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The operation was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task_sets/{id}/release": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "appengine"
+        ],
+        "summary": "Releases the task set",
+        "description": "All tasks is IN_PROGRESS state are marked PENDING.\n- If some PENDING tasks remain, the task set status becomes PENDING as well.\n- If all tasks tasks are FAILED, the task set is marked as FAILED.\n- If no tasks are PENDING and some are COMPLETED, the task set is marked as COMPLETED",
+        "parameters": [
+          {
+            "description": "the id of a task set",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+          }
+        ],
+        "responses": {
           "204": {
-            "description": "When no application_map available (e.g. for harvesting)"
+            "description": "successful operation"
+          },
+          "401": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The operation was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/start": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": [],
+            "basicAuth": []
+          }
+        ],
+        "tags": [
+          "appengine"
+        ],
+        "summary": "Sets a task's status to IN_PROGRESS",
+        "description": "This operation can only be performed on a task within an acquired (IN_PROGRESS) task set, and changes the status of the task from PENDING to IN_PROGRESS",
+        "parameters": [
+          {
+            "description": "the id of a task",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "e165e5c2-ae70-4655-b65b-24b39cc1e0b0"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Operation success"
           },
           "403": {
             "description": "Invalid or missing credentials",
@@ -630,7 +677,7 @@
         }
       }
     },
-    "/tasks/{id}/unstart": {
+    "/tasks/{id}/pause": {
       "post": {
         "security": [
           {
@@ -641,7 +688,8 @@
         "tags": [
           "appengine"
         ],
-        "summary": "Resets the task to PENDING status",
+        "summary": "Resets a task's status to PENDING",
+        "description": "This operation can only be performed on a task within an acquired (IN_PROGRESS) task set, and changes the status of the task from IN_PROGRESS to PENDING",
         "parameters": [
           {
             "description": "the id of a task",
@@ -651,7 +699,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+            "example": "e165e5c2-ae70-4655-b65b-24b39cc1e0b0"
           }
         ],
         "responses": {
@@ -717,7 +765,8 @@
         "tags": [
           "appengine"
         ],
-        "summary": "Upload the resulting 'as applied' GeoPackage application map and sets task's status to COMPLETED",
+        "summary": "Sets a task's status to COMPLETED",
+        "description": "This operation can only be performed on a task within an acquired (IN_PROGRESS) task set, and changes the status of the task from IN_PROGRESS to COMPLETED",
         "parameters": [
           {
             "description": "the id of a task",
@@ -727,21 +776,9 @@
             "schema": {
               "type": "string"
             },
-            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+            "example": "e165e5c2-ae70-4655-b65b-24b39cc1e0b0"
           }
         ],
-        "requestBody": {
-          "required": true,
-          "description": "The 'as applied' GeoPackage to post on the field_data service",
-          "content": {
-            "application/geopackage+sqlite3": {
-              "schema": {
-                "type": "string",
-                "format": "binary"
-              }
-            }
-          }
-        },
         "responses": {
           "204": {
             "description": "successful operation"
@@ -805,7 +842,8 @@
         "tags": [
           "appengine"
         ],
-        "summary": "Sets the task to FAILED status (nothing applied)",
+        "summary": "Sets a task's status to FAILED",
+        "description": "This operation can only be performed on a task within an acquired (IN_PROGRESS) task set, and changes the status of the task from IN_PROGRESS to FAILED",
         "parameters": [
           {
             "description": "the id of a task",
@@ -815,7 +853,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "1001f60a-1c3d-4b60-9a53-fa3a9a413731"
+            "example": "e165e5c2-ae70-4655-b65b-24b39cc1e0b0"
           }
         ],
         "requestBody": {
@@ -825,14 +863,102 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "failure_reason": {
+                  "message": {
                     "type": "string",
                     "description": "The reason for the failure"
                   }
                 }
               },
               "example": {
-                "failure_reason": "Unknown error"
+                "message": "Unknown error"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "403": {
+            "description": "Invalid or missing credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The task was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}/results": {
+      "post": {
+        "security": [
+          {
+            "bearerAuth": [],
+            "basicAuth": []
+          }
+        ],
+        "tags": [
+          "appengine"
+        ],
+        "summary": "Upload task results",
+        "description": "This operation can only be performed on a task within an acquired (IN_PROGRESS) task set. The results (as applied) must be submitted in GeoPackage format, compliant with respective field_data specification, and may be partial, i.e., there may be more than one result for a task.",
+        "parameters": [
+          {
+            "description": "the id of a task",
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "e165e5c2-ae70-4655-b65b-24b39cc1e0b0"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/geopackage+sqlite3": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
               }
             }
           }
@@ -904,7 +1030,7 @@
       }
     },
     "schemas": {
-      "EquipmentItem": {
+      "Equipment": {
         "type": "object",
         "properties": {
           "id": {
@@ -914,22 +1040,32 @@
           "name": {
             "type": "string",
             "example": "My tractor"
+          },
+          "platform_id": {
+            "type": "string",
+            "enum": [
+              "egw",
+              "appengine",
+              "other"
+            ],
+            "description": "the platform to which the equipment is connected to send & receive task info. When no platform is specified, download of task info in ISOXML or shapefile is possible"
+          },
+          "platform_info": {
+            "type": "string",
+            "description": "additional platform-specific information. This might typically be of the format: other:<i>proprietary_id</i>."
+          },
+          "platform_format": {
+            "type": "string",
+            "description": "Format of the task info data. Could be: isoxml, shapefile</code>, other_<i>proprietary</i>"
           }
         },
         "required": [
           "id",
           "name"
-        ]
-      },
-      "ArrayOfEquipment": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EquipmentItem"
-            }
-          }
+        ],
+        "example": {
+          "id": "b86c7fa9-a3be-4284-aee7-25f756acd50e",
+          "name": "My tractor"
         }
       },
       "AdviceURN": {
@@ -937,62 +1073,74 @@
         "pattern": "^urn:[a-z][a-z0-9_.\\-]*:[\\w-.]+",
         "description": "Uniform resource name of an advice with the syntax `urn:<service_id>:<internal_id>`. <service_id> must be the id of a valid and active ATLAS service"
       },
-      "TaskCreation": {
+      "TaskSetCreation": {
         "type": "object",
         "properties": {
           "equipment_id": {
             "type": "string",
             "description": "id of equipment"
-          },
-          "advice_urn": {
-            "$ref": "#/components/schemas/AdviceURN"
-          },
-          "application_refs": {
-            "description": "list of application references to be applied in a single pass. Must be a subset of the ones supplied in the advice planning",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           },
           "notification_url": {
             "type": "string",
             "format": "uri",
             "description": "If present, this URL will be invoked when there are status changes in task applications"
+          },
+          "tasks": {
+            "description": "list of tasks included in the task set",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "advice_urn": {
+                  "$ref": "#/components/schemas/AdviceURN"
+                },
+                "application_ref": {
+                  "description": "application reference to be applied in a single pass. Must be one of those present in the advice (if any)",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "advice_urn"
+              ]
+            }
           }
         },
         "required": [
           "equipment_id",
-          "advice_urn"
+          "advice_urn",
+          "tasks"
         ],
         "example": {
           "equipment_id": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4",
-          "advice_urn": "urn:com.agricircle.atlas.fertilisation_advisor:1e371d44-59ae-4af1-9570-9743dd3ba613",
-          "application_refs": [
-            "slurry"
+          "tasks": [
+            {
+              "advice_urn": "urn:com.agricircle.atlas.fertilisation_advisor:1e371d44-59ae-4af1-9570-9743dd3ba613",
+              "application_ref": "slurry"
+            }
           ],
           "notification_url": "https://consumer.com/task/callback?secret=3d96264b-934d-4e74-82c0-82603a9cb7e2"
         }
       },
-      "Task": {
+      "TaskSet": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "description": "id of task"
+            "description": "id of task set"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time at which the task set was created"
+          },
+          "modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time at which the task set was last updated (e.g. status update - include that of embedded task)"
           },
           "equipment_id": {
             "type": "string",
             "description": "id of equipment"
-          },
-          "advice_urn": {
-            "$ref": "#/components/schemas/AdviceURN"
-          },
-          "application_refs": {
-            "description": "list of application references to be applied in a single pass. Must be a subset of the ones supplied in the advice planning",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           },
           "notification_url": {
             "type": "string",
@@ -1008,175 +1156,345 @@
               "CONFIGURATION_REQUIRED",
               "FAILED"
             ],
-            "description": "The status of the task"
+            "description": "The status of the task set"
           },
           "archived": {
             "type": "boolean",
             "description": "true if task as been canceled"
-          }
-        },
-        "required": [
-          "id",
-          "equipment_id",
-          "advice_urn",
-          "status"
-        ],
-        "example": {
-          "id": "1001f60a-1c3d-4b60-9a53-fa3a9a413731",
-          "equipment_id": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4",
-          "advice_urn": "urn:com.agricircle.atlas.fertilisation_advisor:1e371d44-59ae-4af1-9570-9743dd3ba613",
-          "application_refs": [
-            "slurry"
-          ],
-          "notification_url": "https://consumer.com/task/callback?secret=3d96264b-934d-4e74-82c0-82603a9cb7e2",
-          "status": "PENDING",
-          "archived": false
-        }
-      },
-      "TaskDetails": {
-        "type": "object",
-        "properties": {
-          "applications": {
+          },
+          "tasks": {
+            "description": "list of tasks included in the task set",
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "id of task"
+                },
+                "modified_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time at which the task was last updated (e.g. status update)"
+                },
+                "advice_urn": {
+                  "$ref": "#/components/schemas/AdviceURN"
+                },
                 "application_ref": {
-                  "description": "Application ref of underlying advice",
+                  "description": "application reference to be applied in a single pass. Must be one of those present in the advice (if any)",
                   "type": "string"
                 },
-                "<other_attributes>": {
-                  "description": "Other application attributes of the underlying advice (e.g. product, ...)",
+                "type": {
+                  "description": "type of advice (convenience attribute, extracted from advice)",
                   "type": "string"
                 },
-                "total_amount": {
-                  "description": "Same as total amount of underlying advice",
-                  "type": "number",
-                  "format": "float"
+                "field_name": {
+                  "description": "field name of advice (convenience attribute, extracted from advice)",
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "PENDING",
+                    "IN_PROGRESS",
+                    "COMPLETED",
+                    "FAILED"
+                  ],
+                  "description": "The status of the task"
                 }
-              }
-            }
-          },
-          "field_boundaries": {
-            "description": "GeoJSON boundaries (polygon with holes)",
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "Polygon"
-                ],
-                "description": "Always 'Polygon'"
               },
-              "coordinates": {
-                "type": "array",
-                "items": {
-                  "type": "array",
-                  "items": {
-                    "type": "array",
-                    "minItems": 2,
-                    "maxItems": 3,
-                    "items": {
-                      "type": "number"
-                    },
-                    "description": "Must have  2 items for lat/long or 3 items for lat/long/elevation"
-                  },
-                  "description": "First element is outer boundary, optional addition elements are holes"
-                }
-              }
+              "required": [
+                "id",
+                "advice_urn",
+                "modified_at",
+                "type",
+                "field_name",
+                "status"
+              ]
             }
-          }
-        },
-        "required": [
-          "field_boundaries"
-        ]
-      },
-      "AppEngineTask": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "id of task"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "fertilization",
-              "crop_protection",
-              "irrigation",
-              "harvesting",
-              "sowing"
-            ],
-            "description": "type of the task (from the underlying advice)"
-          },
-          "field_name": {
-            "description": "Name of the field the task must be performed on",
-            "type": "string"
-          },
-          "application_refs": {
-            "description": "list of application references to be applied in a single pass. Must be a subset of the ones supplied in the advice",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "info": {
-            "description": "this is dependent on the advice type. It can be a list of products for fertilization/crop_protection, seed info for sowing, ..."
           }
         },
         "required": [
           "id",
-          "type",
+          "created_at",
+          "modified_at",
           "equipment_id",
-          "field_name"
+          "advice_urn",
+          "status",
+          "tasks"
         ],
         "example": {
           "id": "1001f60a-1c3d-4b60-9a53-fa3a9a413731",
-          "type": "fertilization",
+          "created_at": "2022-08-15T14:32:28Z",
+          "modified_at": "2022-08-15T14:32:28Z",
           "equipment_id": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4",
-          "field_name": "Am bach",
-          "field_boundaries": {
-            "type": "Polygon",
-            "coordinates": [
-              [
-                [
-                  8.475152850151062,
-                  47.47213709091847
-                ],
-                [
-                  8.475152850151062,
-                  47.47213709091847
-                ],
-                [
-                  8.475104570388794,
-                  47.47222049049008
-                ],
-                [
-                  8.475152850151062,
-                  47.47213709091847
-                ]
-              ]
-            ]
-          },
-          "application_refs": [
-            "slurry"
-          ],
-          "info": {
-            "products": [
-              "Cow slurry"
-            ]
-          }
+          "notification_url": "https://consumer.com/task/callback?secret=3d96264b-934d-4e74-82c0-82603a9cb7e2",
+          "status": "PENDING",
+          "tasks": [
+            {
+              "id": "e165e5c2-ae70-4655-b65b-24b39cc1e0b0",
+              "modified_at": "2022-08-15T14:32:28Z",
+              "advice_urn": "urn:com.agricircle.atlas.fertilisation_advisor:1e371d44-59ae-4af1-9570-9743dd3ba613",
+              "application_ref": "slurry",
+              "type": "fertilization",
+              "field_name": "Am Bach",
+              "status": "PENDING"
+            }
+          ]
         }
       },
-      "ArrayOfAppEngineTask": {
+      "AppEngineTaskSet": {
         "type": "object",
         "properties": {
-          "data": {
+          "id": {
+            "type": "string",
+            "description": "id of task set"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time at which the task set was created"
+          },
+          "modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time at which the task set was last updated (e.g. status update - include that of embedded task)"
+          },
+          "equipment_id": {
+            "type": "string",
+            "description": "id of equipment"
+          },
+          "tasks": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AppEngineTask"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "id of task"
+                },
+                "modified_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time at which the task was last updated (e.g. status update)"
+                },
+                "application_ref": {
+                  "description": "application reference to be applied in a single pass. Must be one of those present in the advice (if any)",
+                  "type": "string"
+                },
+                "type": {
+                  "description": "type of advice (convenience attribute, extracted from advice)",
+                  "type": "string"
+                },
+                "field_name": {
+                  "description": "field name of advice (convenience attribute, extracted from advice)",
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "PENDING",
+                    "IN_PROGRESS",
+                    "COMPLETED",
+                    "FAILED"
+                  ],
+                  "description": "The status of the task"
+                }
+              },
+              "required": [
+                "id",
+                "modified_at",
+                "type",
+                "field_name",
+                "status"
+              ]
             }
           }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "modified_at",
+          "type",
+          "equipment_id",
+          "tasks"
+        ],
+        "example": {
+          "id": "1001f60a-1c3d-4b60-9a53-fa3a9a413731",
+          "created_at": "2022-08-15T14:32:28Z",
+          "modified_at": "2022-08-15T14:32:28Z",
+          "equipment_id": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4",
+          "tasks": [
+            {
+              "id": "e165e5c2-ae70-4655-b65b-24b39cc1e0b0",
+              "modified_at": "2022-08-15T14:32:28Z",
+              "application_ref": "slurry",
+              "type": "fertilization",
+              "field_name": "Am Bach",
+              "status": "PENDING"
+            }
+          ]
+        }
+      },
+      "AppEngineDetailedTaskSet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id of task set"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time at which the task set was created"
+          },
+          "modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time at which the task set was last updated (e.g. status update - include that of embedded task)"
+          },
+          "equipment_id": {
+            "type": "string",
+            "description": "id of equipment"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "id of task"
+                },
+                "modified_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Date and time at which the task was last updated (e.g. status update)"
+                },
+                "application_ref": {
+                  "description": "application reference to be applied in a single pass. Must be one of those present in the advice (if any)",
+                  "type": "string"
+                },
+                "type": {
+                  "description": "type of advice (convenience attribute, extracted from advice)",
+                  "type": "string"
+                },
+                "field_name": {
+                  "description": "field name of advice (convenience attribute, extracted from advice)",
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "PENDING",
+                    "IN_PROGRESS",
+                    "COMPLETED",
+                    "FAILED"
+                  ],
+                  "description": "The status of the task"
+                },
+                "field_boundaries": {
+                  "description": "GeoJSON Polygon (may have holes).",
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "Polygon"
+                      ],
+                      "description": "Always 'Polygon'"
+                    },
+                    "coordinates": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "description": "Must have  2 items for lat/long or 3 items for lat/long/elevation"
+                        },
+                        "description": "First element is outer boundary, optional addition elements are holes"
+                      }
+                    }
+                  }
+                },
+                "info": {
+                  "type": "object",
+                  "description": "Advice/application type-specific information as documented in corresponding advisor."
+                }
+              },
+              "required": [
+                "id",
+                "modified_at",
+                "type",
+                "field_name",
+                "status",
+                "field_boundaries",
+                "info"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "modified_at",
+          "type",
+          "equipment_id",
+          "tasks"
+        ],
+        "example": {
+          "id": "1001f60a-1c3d-4b60-9a53-fa3a9a413731",
+          "created_at": "2022-08-15T14:32:28Z",
+          "modified_at": "2022-08-15T14:32:28Z",
+          "equipment_id": "5ae4ed6b-1a85-4c06-a062-b0dadfb15fc4",
+          "tasks": [
+            {
+              "id": "e165e5c2-ae70-4655-b65b-24b39cc1e0b0",
+              "modified_at": "2022-08-15T14:32:28Z",
+              "application_ref": "slurry",
+              "type": "fertilization",
+              "field_name": "Am Bach",
+              "status": "PENDING",
+              "field_boundaries": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      8.475152850151062,
+                      47.47213709091847
+                    ],
+                    [
+                      8.475152850151062,
+                      47.47213709091847
+                    ],
+                    [
+                      8.475104570388794,
+                      47.47222049049008
+                    ],
+                    [
+                      8.475152850151062,
+                      47.47213709091847
+                    ]
+                  ]
+                ]
+              },
+              "info": {
+                "product": {
+                  "name": "Cow slurry",
+                  "unit": "l",
+                  "nutrients": {
+                    "N": 100,
+                    "P2O5": 50,
+                    "K2O": 30,
+                    "MgO": 3
+                  }
+                }
+              }
+            }
+          ]
         }
       },
       "SimpleError": {
