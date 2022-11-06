@@ -1192,6 +1192,10 @@
                   "description": "field name of advice (convenience attribute, extracted from advice)",
                   "type": "string"
                 },
+                "results": {
+                  "description": "true if results (could be partial) where received for this task",
+                  "type": "boolean"
+                },
                 "status": {
                   "type": "string",
                   "enum": [
@@ -1289,6 +1293,10 @@
                 "field_name": {
                   "description": "field name of advice (convenience attribute, extracted from advice)",
                   "type": "string"
+                },
+                "results": {
+                  "description": "true if results (could be partial) where received for this task",
+                  "type": "boolean"
                 },
                 "status": {
                   "type": "string",
