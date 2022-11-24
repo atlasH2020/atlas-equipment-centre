@@ -997,6 +997,21 @@
               }
             }
           },
+          "409": {
+            "description": Duplicate result. Sent when the exact same package has already been recorded for this task.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedError"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleError"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too many requests",
             "content": {
