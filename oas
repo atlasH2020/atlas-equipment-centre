@@ -3,7 +3,7 @@
   "info": {
     "title": "AgriCircle Equipment Centre API",
     "description": "This documents describes ATLAS Equipment Centre API",
-    "version": "1.1.0"
+    "version": "1.1.1"
   },
   "servers": [
     {
@@ -1118,6 +1118,10 @@
                 "advice_urn"
               ]
             }
+          },
+          "description": {
+            "type": "string",
+            "description": "human-readable description of the task set"
           }
         },
         "required": [
@@ -1231,6 +1235,10 @@
                 "status"
               ]
             }
+          },
+          "description": {
+            "type": "string",
+            "description": "human-readable description of the task set"
           }
         },
         "required": [
@@ -1240,7 +1248,8 @@
           "equipment_id",
           "advice_urn",
           "status",
-          "tasks"
+          "tasks",
+          "description"
         ],
         "example": {
           "id": "1001f60a-1c3d-4b60-9a53-fa3a9a413731",
