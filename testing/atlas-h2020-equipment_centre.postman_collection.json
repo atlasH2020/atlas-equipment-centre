@@ -1,0 +1,928 @@
+{
+	"info": {
+		"_postman_id": "64ab362b-f90c-47c0-af0f-d9871229aebc",
+		"name": "atlas-h2020-equipment_centre",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "equipment_appengine (with api key)",
+			"item": [
+				{
+					"name": "get tasks for equipment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody)",
+									"if (res.length > 0) {",
+									"    pm.collectionVariables.set(\"task_set_id\", res[0].id);",
+									"    pm.collectionVariables.set(\"task_id\", res[0].tasks[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets_for/{{equipment_id}}",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets_for",
+								"{{equipment_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "acquire task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets/{{task_set_id}}/acquire",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets",
+								"{{task_set_id}}",
+								"acquire"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "release task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets/{{task_set_id}}/release",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets",
+								"{{task_set_id}}",
+								"release"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "start task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/tasks/{{task_id}}/start",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pause task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/tasks/{{task_id}}/pause",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"pause"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "complete task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/Users/mac/Downloads/output_Fraunhofer Test Field.gpkg"
+							}
+						},
+						"url": {
+							"raw": "{{equipment_centre_url}}/tasks/{{task_id}}/complete",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"complete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fail task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"failure_reason\": \"unkwown reason\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{equipment_centre_url}}/tasks/{{task_id}}/fail",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"fail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list equipment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody);",
+									"if (res.length > 0)",
+									"    pm.collectionVariables.set(\"equipment_id\", res[0].id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/equipment",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"equipment"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "basic",
+				"basic": [
+					{
+						"key": "password",
+						"value": "{{api_key}}",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "{{equipment_id}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "equipment_other (with token)",
+			"item": [
+				{
+					"name": "get tasks for equipment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody)",
+									"if (res.length > 0) {",
+									"    pm.collectionVariables.set(\"task_set_id\", res[0].id);",
+									"    pm.collectionVariables.set(\"task_id\", res[0].tasks[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets_for/{{equipment_id}}",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets_for",
+								"{{equipment_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "acquire task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets/{{task_set_id}}/acquire",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets",
+								"{{task_set_id}}",
+								"acquire"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "release task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets/{{task_set_id}}/release",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets",
+								"{{task_set_id}}",
+								"release"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "start task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/tasks/{{task_id}}/start",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "pause task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/tasks/{{task_id}}/pause",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"pause"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "complete task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "/Users/mac/Downloads/output_Fraunhofer Test Field.gpkg"
+							}
+						},
+						"url": {
+							"raw": "{{equipment_centre_url}}/tasks/{{task_id}}/complete",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"complete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fail task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"failure_reason\": \"unkwown reason\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{equipment_centre_url}}/tasks/{{task_id}}/fail",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"tasks",
+								"{{task_id}}",
+								"fail"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "task sets",
+			"item": [
+				{
+					"name": "submit crop protection task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody);",
+									"if (res.id)",
+									"    pm.collectionVariables.set(\"task_id\", res.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"equipment_id\": \"{{equipment_id}}\",\n    \"tasks\": [\n        {\n            \"advice_urn\": \"{{advice_urn}}\",\n            \"application_ref\": \"{{advice_application_ref}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submit sowing task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody);",
+									"if (res.id)",
+									"    pm.collectionVariables.set(\"task_id\", res.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"equipment_id\": \"{{equipment_id}}\",\n    \"tasks\": [\n        {\n            \"advice_urn\": \"{{advice_urn}}\",\n            \"application_ref\": \"{{advice_application_ref}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submit fertilisation lime task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody);",
+									"if (res.id)",
+									"    pm.collectionVariables.set(\"task_id\", res.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"equipment_id\": \"{{equipment_id}}\",\n    \"tasks\": [\n        {\n            \"advice_urn\": \"{{advice_urn}}\",\n            \"application_ref\": \"{{advice_application_ref}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submit fertilisation NPK task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody);",
+									"if (res.id)",
+									"    pm.collectionVariables.set(\"task_id\", res.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"equipment_id\": \"{{equipment_id}}\",\n    \"tasks\": [\n        {\n            \"advice_urn\": \"{{advice_urn}}\",\n            \"application_ref\": \"slurry\"\n        },\n        {\n            \"advice_urn\": \"{{advice_urn}}\",\n            \"application_ref\": \"phosphorous\"\n        },\n        {\n            \"advice_urn\": \"{{advice_urn}}\",\n            \"application_ref\": \"potassium\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submit harvesting task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody);",
+									"if (res.id)",
+									"    pm.collectionVariables.set(\"task_id\", res.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"equipment_id\": \"{{equipment_id}}\",\n    \"tasks\": [\n        {\n            \"advice_urn\": \"{{advice_urn}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get task set details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody);",
+									"if (res.tasks) {",
+									"    pm.collectionVariables.set(\"task_id\", res.tasks[0].id);",
+									"    pm.collectionVariables.set(\"equipment_id\", res.equipment_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets/{{task_set_id}}",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets",
+								"{{task_set_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete task set",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/task_sets/{{task_id}}",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"task_sets",
+								"{{task_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "equipment",
+			"item": [
+				{
+					"name": "list equipment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = JSON.parse(responseBody);",
+									"if (res.length > 0)",
+									"    pm.collectionVariables.set(\"equipment_id\", res[0].id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/equipment",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"equipment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get equipment details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{equipment_centre_url}}/equipment/{{equipment_id}}",
+							"host": [
+								"{{equipment_centre_url}}"
+							],
+							"path": [
+								"equipment",
+								"{{equipment_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{equipment_centre_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "equipment_centre_url",
+			"value": "https://staging.atlas.agricircle.com/api/h2020/equipment_centre",
+			"type": "default"
+		},
+		{
+			"key": "equipment_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "task_set_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "task_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "api_key_id",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "api_key",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
